@@ -21,10 +21,12 @@ public class EnregistrerCommande extends HttpServlet {
        ArrayList<String>  leCaddy = null;
        
        //  ******************************************************       
-       //   initialisez  nom et  le caddie du client : variable « nom » et  lesdisques »
+       //   initialisez  nom et  le caddie du client : variable ï¿½ nom ï¿½ et  lesdisques ï¿½
        //      
        //  ****************************************************** 
-       
+       HttpSession session = request.getSession(); 
+       nom = (String)session.getAttribute("nomClient");
+       leCaddy = Depot.lesCaddy.get(nom);
        
        
       //  ******************************************************
@@ -41,16 +43,16 @@ public class EnregistrerCommande extends HttpServlet {
           out.println("<body bgcolor=\"white\">");
           out.println("<a HREF=achat> Vous pouvez commandez un autre disque </a><br> ");
 		  out.println("<A HREF=facturer> Fin de la commande et demande de la facture  de   " + nom.toUpperCase()+" </A><br> ");
-          out.println("<h3>" + " Disques rajoutés à la commande de  " + nom.toUpperCase()  + "</h3>");
+          out.println("<h3> Disques rajoutÃ©s Ã  la commande de  " + nom.toUpperCase()  + "</h3>");
 
       //  ******************************************************       
       //   afficher le contenu du caddie
       //  ******************************************************   
           
-          
+          Depot.afficherContenuCaddy(leCaddy, out, request.getContextPath());
           //  **************************************************
           AjouteCaddyBase(nom,leCaddy);
-          out.println("<h3>" + "et voici " + nom.toUpperCase()  + "  Voici  l'ensemble de tes commandes  enregistrées " + "</h3>");
+          out.println("<h3>" + "et voici " + nom.toUpperCase()  + "  Voici  l'ensemble de tes commandes  enregistrï¿½es " + "</h3>");
           MontreCommandeBase(nom, out, request.getContextPath());
           out.println("</body>");
           out.println("</html>");
@@ -59,12 +61,12 @@ public class EnregistrerCommande extends HttpServlet {
      protected void OuvreBase() {
        try {
           Class.forName("org.gjt.mm.mysql.Driver").newInstance(); 
-          connexion = DriverManager.getConnection(  "jdbc:mysql://localhost/magasin","root","");
+          connexion = DriverManager.getConnection(  "jdbc:mysql://localhost/magasin","root","ChuChu@de1");
           connexion.setAutoCommit(true);
           stmt = connexion.createStatement();
        }
            catch (Exception E) {         
-             log(" -------- problème  " + E.getClass().getName() );
+             log(" -------- problÃ¨me  " + E.getClass().getName() );
              E.printStackTrace();
           }	
     }
@@ -75,7 +77,7 @@ public class EnregistrerCommande extends HttpServlet {
           connexion.close();         
        }
            catch (Exception E) {         
-             log(" -------- problème  " + E.getClass().getName() );
+             log(" -------- problÃ¨me  " + E.getClass().getName() );
              E.printStackTrace();
           }	
     }
@@ -96,15 +98,30 @@ public class EnregistrerCommande extends HttpServlet {
     }
 
      protected void AjouteCaddyBase(String nom, ArrayList<String> lesdisques ) {
-       ResultSet rset = null;
+       //ResultSet rset = null;
        int cle =0;
        try {
     	   
         //  ********************************************************       
-        //   ajoutez le contenu du caddie dans la  base de données. « table commande » 
-    	//   utilisez une PreparedStatement JDBC de préférence
+        //   ajoutez le contenu du caddie dans la  base de donnï¿½es. ï¿½ table commande ï¿½ 
+    	//   utilisez une PreparedStatement JDBC de prï¿½fï¿½rence
         //  ********************************************************  
-
+    	   this.OuvreBase();
+    	   this.AjouteNomBase(nom);
+    	   cle = this.ObtenirReferenceDuClient(nom);
+    	   if(cle!=-1){
+    		   for (String nomarticle : lesdisques) {
+    				
+        		   this.pstmt = this.connexion.prepareStatement("INSERT INTO commande(nomarticle,client) VALUES(?,?)");
+            	   this.pstmt.setString(1, nomarticle);
+            	   this.pstmt.setInt(2, cle);
+            	   
+            	   this.pstmt.executeUpdate();
+        	   }
+    		   
+    		   this.fermeBase();
+    	   }
+    	   
 
  
     	   
@@ -112,26 +129,30 @@ public class EnregistrerCommande extends HttpServlet {
      	  }
          
        catch (Exception E) {        
-             log(" - problème  ajoute " + E.getClass().getName() );
+             log(" - problÃ¨me  ajoute " + E.getClass().getName() );
              E.printStackTrace();
           }	
     }
  
      protected void MontreCommandeBase(String nom, PrintWriter out, String repertoire) {
        ResultSet rset = null;
-       ResultSet rs = null;
-       Disque leDisque=null;
+       //Disque leDisque=null;
        int cle =0;
        try {
     	   
        //  *********************************************************      
-       //   affichez les disques que client a commandé  dans la  base de données. « table commande » 
+       //   affichez les disques que client a commandï¿½  dans la  base de donnï¿½es. ï¿½ table commande ï¿½ 
        // vous pouvez utiliser "afficherDisquesDansBase" avec une instance de "Resulset" de la table commande
-       //  **********************************************************  
-
-
+       //  ********************************************************** 
+    	   this.OuvreBase();
+    	   cle = this.ObtenirReferenceDuClient(nom);
     	   
+    	   this.pstmt = this.connexion.prepareStatement("SELECT * FROM commande WHERE client= ?");
+    	   this.pstmt.setInt(1, cle);
     	   
+    	   rset = this.pstmt.executeQuery(); 	   
+    	   Depot.afficherDisquesDansBase(rset, out, repertoire);
+    	   this.fermeBase();
     	   
     	   
     	   
@@ -143,6 +164,26 @@ public class EnregistrerCommande extends HttpServlet {
                E.printStackTrace();
   }	  }
 
+     protected int ObtenirReferenceDuClient(String nomClient){
+    	 int reference = -1;
+    	   try {
+    	          ResultSet rset = null;  	          
+    	          pstmt= connexion.prepareStatement("select id from client where nom=?");
+    	          pstmt.setString(1,nomClient);
+    	          rset=pstmt.executeQuery();
+    	          if (rset.next()) {
+    	        	  reference = rset.getInt("id");
+    	          }   	           	          
+    	             
+    	       	}
+    	       
+    	           catch (Exception E) {
+    	             log(" - probeme  " + E.getClass().getName() );
+    	             E.printStackTrace();
+    	          }
+    	   
+    	   return reference;
+     }
  
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
