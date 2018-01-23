@@ -18,11 +18,17 @@ public class FiltreSortie implements Filter {
 		
 		  
 		  //************************************************************
-		  // ce filtre doit s'executer après la servlet 
+		  // ce filtre doit s'executer aprï¿½s la servlet 
 		  // il vide le caddie du client en cours
-		  //************************************************************		  
-
-		  chain.doFilter(request, response); 
+		  //************************************************************	
+		  
+		  chain.doFilter(hrequest, response);
+		  
+		  HttpSession session = hrequest.getSession(); 
+		  nom = (String)session.getAttribute("nomClient");
+		  Depot.lesCaddy.replace(nom, null);
+//		  
+//		  chain.doFilter(request, response); 
 	
 	}
 

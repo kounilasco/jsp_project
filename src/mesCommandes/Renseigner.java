@@ -38,7 +38,7 @@ public class Renseigner extends HttpServlet {
      	//   et rappel de la  servlet   "GererComptes" avec ces informations en param�tre pour enregistrer ces valeurs
         //   le param�tre inscrire est envoy� avec comme valeur inscrire (bouton submit)
         //  ********************************************************************************************       
-              if( demande.equals("inscription")){
+              if(demande!=null && demande.equals("inscription")){
             	  if(erreur !=null){
             		  out.println("<p style='colore: red'> Une erreur s'est produite : Les informations transmises ne sont pas correctes</p>");
             	  }else{

@@ -4,6 +4,8 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.apache.jasper.tagplugins.jstl.core.ForEach;
+
 public class FiltreEntree implements Filter {
 	private FilterConfig filterConfig = null;
 
@@ -14,25 +16,29 @@ public class FiltreEntree implements Filter {
 	
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		String nom, motPasse = null;
+		String nom, motPasse = null;//
 		HttpServletRequest hrequest = (HttpServletRequest) request;
 		HttpServletResponse hresponse = (HttpServletResponse) response;
-		Cookie[] cookies = hrequest.getCookies();
+		Cookie[] cookies = hrequest.getCookies();//
 		HttpSession session = hrequest.getSession(); 
-		nom = (String)session.getAttribute("nomClient");
-		Stock stockDisponible= (Stock) session.getAttribute("stockCourant");
+		nom = (String)session.getAttribute("nomClient");//
+		Stock stockDisponible= (Stock) session.getAttribute("stockCourant");//
 		//  ********************************************************************************************        
-		//   s’il n’existe pas un cookie dont le nom est celui dans la variable de session « nomClient » 
-		//         (vous pouvez utilisez la méthode «  rechercheCookies » de la classe Util.java)
-		//   et qu’il n’existe pas  la variable de session « stockCourant » : appel de la servlet "Renseigner" pour s'inscrire 
+		//   sï¿½il nï¿½existe pas un cookie dont le nom est celui dans la variable de session ï¿½ nomClient ï¿½ 
+		//         (vous pouvez utilisez la mï¿½thode ï¿½  rechercheCookies ï¿½ de la classe Util.java)
+		//   et quï¿½il nï¿½existe pas  la variable de session ï¿½ stockCourant ï¿½ : appel de la servlet "Renseigner" pour s'inscrire 
 		//   Autrement on continue (chain.doFilter).
 		//  ********************************************************************************************                   
-
-
-		
-		
-		chain.doFilter(request, response); 
-		
+		if(Util.rechercheCookies(cookies, nom) == null && stockDisponible == null) {
+			hresponse.sendRedirect("formulaire?demande=connexion");
+			/*System.out.println(nom);
+			for (Cookie cookie : cookies) {
+				System.out.println(cookie.getName());
+			}*/
+		}
+		else {
+			chain.doFilter(hrequest, hresponse); 
+		}
 	 }
 
 	public void destroy() {

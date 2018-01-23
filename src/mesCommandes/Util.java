@@ -8,12 +8,16 @@ class Util {
          
 static public   String rechercheCookies(Cookie[] lescookies, String nom)  {
          String reponse =null;
-         
+         for (Cookie cookie : lescookies) {
+			if(identique(cookie.getName(),nom)) {
+				reponse = cookie.getValue();
+			}
+		}
                //  ********************************************************************************************        
-               //  recherche si dans le tableau de cookies il en existe un avec le nom donné.
-               //       si oui  la valeur de ce cookie est donnée en résultat (mot de passe)
-               //  Cette méthode sera appelée par d’autres classes aussi elle est « public » 
-               //  et « static » pour pouvoir  l’appeler directement par la classe  "Util.rechercheCookies(..)"
+               //  recherche si dans le tableau de cookies il en existe un avec le nom donnï¿½.
+               //       si oui  la valeur de ce cookie est donnï¿½e en rï¿½sultat (mot de passe)
+               //  Cette mï¿½thode sera appelï¿½e par dï¿½autres classes aussi elle est ï¿½ public ï¿½ 
+               //  et ï¿½ static ï¿½ pour pouvoir  lï¿½appeler directement par la classe  "Util.rechercheCookies(..)"
                //  ********************************************************************************************
 
          

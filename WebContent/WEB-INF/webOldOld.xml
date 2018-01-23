@@ -8,30 +8,6 @@
     <filter-name>verifieClient</filter-name>
     <filter-class>mesCommandes.FiltreEntree</filter-class>
   </filter>
-  <filter>
-    <filter-name>effaceCommande</filter-name>
-    <filter-class>mesCommandes.FiltreSortie</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>effaceCommande</filter-name>
-    <url-pattern>/servlet/enregistre</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>verifieClient</filter-name>
-    <url-pattern>/servlet/achat</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>verifieClient</filter-name>
-    <url-pattern>/servlet/commande</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>verifieClient</filter-name>
-    <url-pattern>/servlet/enregistre</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>verifieClient</filter-name>
-    <url-pattern>/servlet/facturer</url-pattern>
-  </filter-mapping>
   <servlet>
     <servlet-name>entree</servlet-name>
     <servlet-class>mesCommandes.EntreeMagasinDisque</servlet-class>
@@ -60,7 +36,7 @@
     <servlet-name>commander</servlet-name>
     <url-pattern>/servlet/commande</url-pattern>
   </servlet-mapping>
-  <servlet-mapping>
+   <servlet-mapping>
     <servlet-name>enregistre</servlet-name>
     <url-pattern>/servlet/enregistre</url-pattern>
   </servlet-mapping>

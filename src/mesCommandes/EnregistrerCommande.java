@@ -52,7 +52,7 @@ public class EnregistrerCommande extends HttpServlet {
           Depot.afficherContenuCaddy(leCaddy, out, request.getContextPath());
           //  **************************************************
           AjouteCaddyBase(nom,leCaddy);
-          out.println("<h3>" + "et voici " + nom.toUpperCase()  + "  Voici  l'ensemble de tes commandes  enregistr�es " + "</h3>");
+          out.println("<h3>" + "et voici " + nom.toUpperCase()  + "  Voici  l'ensemble de tes commandes  enregistrées " + "</h3>");
           MontreCommandeBase(nom, out, request.getContextPath());
           out.println("</body>");
           out.println("</html>");
@@ -109,7 +109,7 @@ public class EnregistrerCommande extends HttpServlet {
     	   this.OuvreBase();
     	   this.AjouteNomBase(nom);
     	   cle = this.ObtenirReferenceDuClient(nom);
-    	   if(cle!=-1){
+    	   if(cle!=-1 && lesdisques != null){
     		   for (String nomarticle : lesdisques) {
     				
         		   this.pstmt = this.connexion.prepareStatement("INSERT INTO commande(nomarticle,client) VALUES(?,?)");
@@ -120,11 +120,7 @@ public class EnregistrerCommande extends HttpServlet {
         	   }
     		   
     		   this.fermeBase();
-    	   }
-    	   
-
- 
-    	   
+    	   }	   
           //  ******************************************************
      	  }
          

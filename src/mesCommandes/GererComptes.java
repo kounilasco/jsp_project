@@ -41,6 +41,7 @@ public class GererComptes extends HttpServlet {
     	   if(nomCookie!=null && motPasseCookie!=null){
     		   Cookie cookie = new Cookie(nomCookie, motPasseCookie);
     		   cookie.setMaxAge(60000);
+    		   //cookie.setDomain("/");
     		   response.addCookie(cookie);
     		   response.sendRedirect("formulaire?demande=connexion");
     	   }
