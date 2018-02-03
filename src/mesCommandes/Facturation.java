@@ -79,10 +79,13 @@ public class Facturation extends HttpServlet {
 		
 	}
 
+	/**
+	 * fonction d'ouverture de la base de données
+	 */
     protected void OuvreBase() {
         try {
            Class.forName("org.gjt.mm.mysql.Driver").newInstance(); 
-           connexion = DriverManager.getConnection(  "jdbc:mysql://localhost/magasin","root","ChuChu@de1");
+           connexion = DriverManager.getConnection(  "jdbc:mysql://localhost/magasin","root","");
            connexion.setAutoCommit(true);
            stmt = connexion.createStatement();
         }
@@ -91,7 +94,9 @@ public class Facturation extends HttpServlet {
               E.printStackTrace();
            }	
      }
-  
+  /**
+   * fonction de fermeture de la base de données
+   */
       protected void fermeBase() {
         try {
            stmt.close();        
@@ -102,7 +107,11 @@ public class Facturation extends HttpServlet {
               E.printStackTrace();
            }	
      }
-      
+      /**
+       * fonction permettant d'obtenir l'id du client à partir de spn nom
+       * @param nomClient
+       * @return
+       */
       protected int ObtenirReferenceDuClient(String nomClient){
      	 int reference = -1;
      	   try {
@@ -123,7 +132,12 @@ public class Facturation extends HttpServlet {
      	   
      	   return reference;
       }
-      
+      /**
+       * fonction d'affichage de la facture
+       * @param rs
+       * @param out
+       * @param repertoire
+       */
       protected void afficherFacture(ResultSet rs, PrintWriter out, String repertoire)
       {
     	  Disque leDisque; 

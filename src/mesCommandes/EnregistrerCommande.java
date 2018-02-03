@@ -61,7 +61,7 @@ public class EnregistrerCommande extends HttpServlet {
      protected void OuvreBase() {
        try {
           Class.forName("org.gjt.mm.mysql.Driver").newInstance(); 
-          connexion = DriverManager.getConnection(  "jdbc:mysql://localhost/magasin","root","ChuChu@de1");
+          connexion = DriverManager.getConnection(  "jdbc:mysql://localhost/magasin","root","");
           connexion.setAutoCommit(true);
           stmt = connexion.createStatement();
        }
